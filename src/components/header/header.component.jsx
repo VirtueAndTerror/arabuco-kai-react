@@ -7,9 +7,12 @@ import './header.styles.scss';
 
 const Header = () => (
 	<nav className='nav'>
-		<Link classname='logo-container' to='/'>
-			<Logo className='logo' />
-		</Link>
+		<div className='brand'>
+			<Link className='logo-container' to='/'>
+				<Logo className='logo' />
+			</Link>
+			<h1 className='brand__heading'>Arabuco Kai</h1>
+		</div>
 		<div className='nav-links'>
 			<Link className='nav__link' to='/shop'>
 				Shop
