@@ -1,0 +1,11 @@
+.sign-in-and-sign-up {
+	display: grid;
+	width: 850px;
+	margin: 30px auto;
+}
+
+@media screen and (min-width: 786px) {
+	.sign-in-and-sign-up {
+		grid-template-columns: repeat(2, 1fr);
+	}
+}
