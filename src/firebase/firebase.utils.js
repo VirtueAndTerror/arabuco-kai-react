@@ -1,6 +1,8 @@
 import firebase from 'firebase/app';
-import 'firebae/firestore';
-import 'firebase/fireauth';
+import 'firebase/firestore';
+import 'firebase/auth';
+
+/* Conects and Intialize Firebase */
 
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
@@ -15,16 +17,30 @@ const firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 
-const { auth, firestore } = firebase;
-export const authMiddleware = { auth, firestore };
+/* Setup Sign in with Google */
+export const auth = firebase.auth();
+// export const firestore = firebase.firestore();
 
-// export const auth = firebase.auth();
-// export const firesotre = firebase.firestore();
-
-const provider = new auth.GoogleAuthProvider();
+const provider = new firebase.auth.GoogleAuthProvider();
+provider.addScope('profile');
+provider.addScope('email');
 
 provider.setCustomParameters({ prompt: 'select_account' });
 
-export const signInWithGoogle = auth.signInWithPopup(provider);
-
+export const signInWithGoogle = () => {
+	firebase
+		.auth()
+		.signInWithPopup(provider)
+		// Optional code for handeling credentials and errors.
+		.then(result => {
+			let credential = result.credential;
+			const token = credential.accessToken;
+			const user = result.user;
+		})
+		.catch(error => {
+			const errorCode = error.code;
+			const email = error.email;
+			let credential = error.credential;
+		});
+};
 export default firebase;
