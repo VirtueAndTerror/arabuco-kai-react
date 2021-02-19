@@ -15,11 +15,39 @@ const firebaseConfig = {
 	measurementId: 'G-0WWPS6E3S6',
 };
 
+/*Modeling the data to fetch  */
+export const createUserProfileDocument = async (userAuth, additionalData) => {
+	if (!userAuth) return;
+	// User Ref Object gives me access to CRUD methods.
+	// This checks if user exists.
+	const userRefObj = firestore.doc(`users/${userAuth.uid}`);
+
+	const snapShot = await userRefObj.get();
+
+	if (!snapShot.exists) {
+		const { displayName, email } = userAuth;
+		const createdAt = new Date();
+
+		try {
+			await userRefObj.set({
+				displayName,
+				email,
+				createdAt,
+				...additionalData,
+			});
+		} catch (error) {
+			console.error('error creating user', error.message);
+		}
+	}
+
+	return userRefObj;
+};
+
 firebase.initializeApp(firebaseConfig);
 
 /* Setup Sign in with Google */
 export const auth = firebase.auth();
-// export const firestore = firebase.firestore();
+export const firestore = firebase.firestore();
 
 const provider = new firebase.auth.GoogleAuthProvider();
 provider.addScope('profile');

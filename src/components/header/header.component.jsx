@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 
 import { auth } from '../../firebase/firebase.utils';
@@ -16,6 +16,9 @@ const Header = ({ currentUser }) => (
 			<h1 className='brand__heading'>Arabuco Kai</h1>
 		</div>
 		<div className='nav-links'>
+			{currentUser ? (
+				<div className='nav__user'>{`Logged in as ${currentUser.displayName}`}</div>
+			) : null}
 			<Link className='nav__link' to='/shop'>
 				Shop
 			</Link>

@@ -41,8 +41,12 @@
 
 		.nav__link {
 			text-transform: uppercase;
-			padding: 10px 15px;
 			cursor: pointer;
+		}
+
+		.nav__link,
+		.nav__user {
+			padding: 10px 15px;
 		}
 	}
 }
