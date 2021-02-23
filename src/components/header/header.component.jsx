@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
 
 import { auth } from '../../firebase/firebase.utils';
 
@@ -39,4 +40,10 @@ const Header = ({ currentUser }) => (
 	</nav>
 );
 
-export default Header;
+// 'state' hear is the top-level root-reducer
+// We want to set 'currentUser' to the user property fo the root-reducer.
+const mapStateToProps = state => ({
+	currentUser: state.user.currentUser,
+});
+
+export default connect(mapStateToProps)(Header);
