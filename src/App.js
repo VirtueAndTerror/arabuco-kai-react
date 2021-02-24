@@ -11,7 +11,6 @@ import Header from './components/header/header.component';
 
 import { auth, createUserProfileDocument } from './firebase/firebase.utils';
 import { setCurrentUser } from './redux/user/user.actions';
-import SignIn from './components/sign-in/sign-in.component';
 
 class App extends Component {
 	unsubscribeFromAuth = null;
