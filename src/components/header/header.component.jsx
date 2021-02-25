@@ -1,10 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
+import { createStructuredSelector } from 'reselect';
 
 import { auth } from '../../firebase/firebase.utils';
 import CartIcon from '../cart-icon/cart-icon.component';
 import CartDropdown from '../cart-dropdown/cart-dropdown.component';
+import { selectCartHidden } from '../../redux/cart/cart.selectors';
+import { selectCurrentUser } from '../../redux/user/user.selectors';
 
 import { ReactComponent as Logo } from '../../assets/sun.svg';
 
@@ -45,10 +48,11 @@ const Header = ({ currentUser, hidden }) => (
 );
 
 // 'state' hear is the top-level root-reducer
-// We want to set 'currentUser' to the user property fo the root-reducer.
-const mapStateToProps = ({ user: { currentUser }, cart: { hidden } }) => ({
-	currentUser,
-	hidden,
+// We want to set 'currentUser' to the user property of the root-reducer.
+//  createStructuredSelector will autmaticlly pass the State to each of the selectors listed.
+const mapStateToProps = createStructuredSelector({
+	currentUser: selectCurrentUser,
+	hidden: selectCartHidden,
 });
 
 export default connect(mapStateToProps)(Header);

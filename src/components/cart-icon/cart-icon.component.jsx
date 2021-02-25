@@ -1,6 +1,7 @@
 import React from 'react';
 import { Cart } from 'react-bootstrap-icons';
 import { connect } from 'react-redux';
+import { createStructuredSelector } from 'reselect';
 import { toggleCartHidden } from '../../redux/cart/cart.actions';
 import { selectCartItemsCount } from '../../redux/cart/cart.selectors';
 
@@ -13,8 +14,9 @@ const CartIcon = ({ toggleCartHidden, itemCount }) => (
 	</div>
 );
 
-const mapStateToProps = state => ({
-	itemCount: selectCartItemsCount(state),
+//  createStructuredSelector() will automaticlly pass the Whole State to the selectors listed in the object passed to it.
+const mapStateToProps = createStructuredSelector({
+	itemCount: selectCartItemsCount,
 });
 
 // Shorthanded version of dispatch.
