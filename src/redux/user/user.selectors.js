@@ -3,8 +3,8 @@ import { createSelector } from 'reselect';
 // INPUT SELECTORS
 const selectUser = state => state.user;
 
-// OUTPUT SELECTOR
 export const selectCurrentUser = createSelector(
 	[selectUser],
+	// OUTPUT SELECTOR
 	user => user.currentUser
 );
