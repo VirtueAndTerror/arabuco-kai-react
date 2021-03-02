@@ -17,11 +17,13 @@ const firebaseConfig = {
 
 /*Modeling the data to fetch  */
 export const createUserProfileDocument = async (userAuth, additionalData) => {
+	console.log('userAuth.uid', userAuth.uid);
 	if (!userAuth) return;
-	// User Ref Object gives me access to CRUD methods.
-	// This checks if user exists.
+	// User Ref Object gives me access to CRUD methods & point to the location we are quering for.
 	const userRef = firestore.doc(`users/${userAuth.uid}`);
+	console.log('userRef', userRef);
 
+	// This checks if user exists.
 	const snapShot = await userRef.get();
 
 	if (!snapShot.exists) {
@@ -45,6 +47,41 @@ export const createUserProfileDocument = async (userAuth, additionalData) => {
 
 firebase.initializeApp(firebaseConfig);
 
+// This func allow us store an entire collections on my Firebase.
+export const addCollectionAndDocuments = async (
+	collectionKey,
+	objectsToAdd
+) => {
+	const collectionRef = firestore.collection(collectionKey);
+
+	const batch = firestore.batch();
+	objectsToAdd.forEach(obj => {
+		const newDocRef = collectionRef.doc();
+		batch.set(newDocRef, obj);
+	});
+
+	return await batch.commit();
+};
+
+// This gets the snapshot obj.
+export const convertCollectionsSnapshotToMap = collections => {
+	const transformedColleciton = collections.docs.map(doc => {
+		const { title, items } = doc.data();
+
+		return {
+			routeName: encodeURI(title.toLowerCase()),
+			id: doc.id,
+			title,
+			items,
+		};
+	});
+
+	return transformedColleciton.reduce((accumulator, collection) => {
+		accumulator[collection.title.toLowerCase()] = collection;
+		return accumulator;
+	}, {});
+};
+
 /* Setup Sign in with Google */
 export const auth = firebase.auth();
 export const firestore = firebase.firestore();
@@ -67,8 +104,7 @@ export const signInWithGoogle = () => {
 		})
 		.catch(error => {
 			const errorCode = error.code;
-			const email = error.email;
-			let credential = error.credential;
+			new Error(`Error number ${errorCode} has occurred.`);
 		});
 };
 export default firebase;

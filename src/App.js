@@ -9,11 +9,17 @@ import HomePage from './pages/homepage/homepage.component';
 import ShopPage from './pages/shop/shop.component';
 import SignInAndSignUpPage from './pages/sign-in-and-sign-up/sign-in-and-sign-up.component';
 import CheckoutPage from './pages/checkout/checkout.component';
+
 import Header from './components/header/header.component';
 
-import { auth, createUserProfileDocument } from './firebase/firebase.utils';
+import {
+	auth,
+	createUserProfileDocument,
+	// addCollectionAndDocuments,
+} from './firebase/firebase.utils';
 import { setCurrentUser } from './redux/user/user.actions';
 import { selectCurrentUser } from './redux/user/user.selectors';
+// import { selectCollectionsForPreview } from './redux/shop/shop.selectors';
 
 class App extends Component {
 	unsubscribeFromAuth = null;
@@ -21,22 +27,29 @@ class App extends Component {
 	componentDidMount() {
 		const { setCurrentUser } = this.props;
 
-		this.unsubscribeFromAuth = auth.onAuthStateChanged(async userAuth => {
-			if (userAuth) {
-				const userRef = await createUserProfileDocument(userAuth);
+		this.unsubscribeFromAuth = auth.onAuthStateChanged(
+			async userAuth => {
+				if (userAuth) {
+					const userRef = await createUserProfileDocument(userAuth);
 
-				userRef.onSnapshot(snapShot => {
-					setCurrentUser({
-						id: snapShot.id,
-						// The 'id' property is in the snapshot,
-						// But the rest of properties are in object returned by snapShot.data().
-						...snapShot.data(),
+					userRef.onSnapshot(snapShot => {
+						setCurrentUser({
+							id: snapShot.id,
+							// The 'id' property is in the snapshot,
+							// But the rest of properties are in object returned by snapShot.data().
+							...snapShot.data(),
+						});
 					});
-				});
-			} else {
-				setCurrentUser(userAuth);
-			}
-		});
+				} else {
+					setCurrentUser(userAuth);
+					// addCollectionAndDocuments(
+					// 	'collections',
+					// 	collectionsArray.map(({ title, items }) => ({ title, items }))
+					// );
+				}
+			},
+			error => new Error(error)
+		);
 	}
 
 	componentWillUnmount() {
@@ -70,6 +83,7 @@ class App extends Component {
 
 const mapStateToProps = createStructuredSelector({
 	currentUser: selectCurrentUser,
+	// collectionsArray: selectCollectionsForPreview,
 });
 
 // 'dispatch()' is going to be an action that I'm going to pass to every reducer.
