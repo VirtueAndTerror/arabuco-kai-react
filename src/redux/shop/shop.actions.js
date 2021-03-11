@@ -23,18 +23,19 @@ export const fetchCollectionsFailure = errorMessage => ({
 
 // Redux-Thunk is going to detect this function,
 // take the returned dispatch function and ...
-export const fetchCollectionsStartAsync = () => {
-	return dispatch => {
-		const collectionRef = firestore.collection('collections');
-		dispatch(fetchCollectionsStart());
 
-		// Observables Pattern
-		collectionRef.onSnapshot(
-			async snapshot => {
-				const collectionsMap = await convertCollectionsSnapshotToMap(snapshot);
-				dispatch(fetchCollectionsSuccess(collectionsMap));
-			},
-			error => dispatch(fetchCollectionsFailure(error.message))
-		);
-	};
-};
+// export const fetchCollectionsStartAsync = () => {
+// 	return dispatch => {
+// 		const collectionRef = firestore.collection('collections');
+// 		dispatch(fetchCollectionsStart());
+
+// 		// Observables Pattern
+// 		collectionRef.onSnapshot(
+// 			async snapshot => {
+// 				const collectionsMap = await convertCollectionsSnapshotToMap(snapshot);
+// 				dispatch(fetchCollectionsSuccess(collectionsMap));
+// 			},
+// 			error => dispatch(fetchCollectionsFailure(error.message))
+// 		);
+// 	};
+// };

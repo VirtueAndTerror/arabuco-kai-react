@@ -12,48 +12,15 @@ import CheckoutPage from './pages/checkout/checkout.component';
 
 import Header from './components/header/header.component';
 
-import {
-	auth,
-	createUserProfileDocument,
-	// addCollectionAndDocuments,
-} from './firebase/firebase.utils';
-import { setCurrentUser } from './redux/user/user.actions';
 import { selectCurrentUser } from './redux/user/user.selectors';
-// import { selectCollectionsForPreview } from './redux/shop/shop.selectors';
+import { checkUserSession } from './redux/user/user.actions';
 
 class App extends Component {
 	unsubscribeFromAuth = null;
 
 	componentDidMount() {
-		const { setCurrentUser } = this.props;
-
-		this.unsubscribeFromAuth = auth.onAuthStateChanged(
-			async userAuth => {
-				if (userAuth) {
-					const userRef = await createUserProfileDocument(userAuth);
-
-					userRef.onSnapshot(snapShot => {
-						setCurrentUser({
-							id: snapShot.id,
-							// The 'id' property is in the snapshot,
-							// But the rest of properties are in object returned by snapShot.data().
-							...snapShot.data(),
-						});
-					});
-				} else {
-					setCurrentUser(userAuth);
-					// addCollectionAndDocuments(
-					// 	'collections',
-					// 	collectionsArray.map(({ title, items }) => ({ title, items }))
-					// );
-				}
-			},
-			error => new Error(error)
-		);
-	}
-
-	componentWillUnmount() {
-		this.unsubscribeFromAuth();
+		const { checkUserSession } = this.props;
+		checkUserSession();
 	}
 
 	render() {
@@ -83,15 +50,10 @@ class App extends Component {
 
 const mapStateToProps = createStructuredSelector({
 	currentUser: selectCurrentUser,
-	// collectionsArray: selectCollectionsForPreview,
 });
 
-// 'dispatch()' is going to be an action that I'm going to pass to every reducer.
-// 'dispatch()' tells  Redux to make a state change.
-const mapDispatchToProps = dispatch => ({
-	setCurrentUser: user => dispatch(setCurrentUser(user)),
-});
+// const mapDispatchToProps = dispatch => ({
+// 	checkUserSession: () => dispatch(checkUserSession()),
+// });
 
-export default connect(mapStateToProps, mapDispatchToProps)(App);
-
-// export default connect(mapStateToProps, { setCurrentUser })(App);
+export default connect(mapStateToProps, { checkUserSession })(App);

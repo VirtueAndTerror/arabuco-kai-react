@@ -15,13 +15,13 @@ const firebaseConfig = {
 	measurementId: 'G-0WWPS6E3S6',
 };
 
+firebase.initializeApp(firebaseConfig);
+
 /*Modeling the data to fetch  */
 export const createUserProfileDocument = async (userAuth, additionalData) => {
-	console.log('userAuth.uid', userAuth.uid);
 	if (!userAuth) return;
 	// User Ref Object gives me access to CRUD methods & point to the location we are quering for.
 	const userRef = firestore.doc(`users/${userAuth.uid}`);
-	console.log('userRef', userRef);
 
 	// This checks if user exists.
 	const snapShot = await userRef.get();
@@ -44,8 +44,6 @@ export const createUserProfileDocument = async (userAuth, additionalData) => {
 
 	return userRef;
 };
-
-firebase.initializeApp(firebaseConfig);
 
 // This func allow us store an entire collections on my Firebase.
 export const addCollectionAndDocuments = async (
@@ -82,20 +80,29 @@ export const convertCollectionsSnapshotToMap = collections => {
 	}, {});
 };
 
+// This mimicks code as if we didnt have firebase.
+export const getCurrentUser = () => {
+	return new Promise((resolve, reject) => {
+		const unsubscribe = auth.onAuthStateChanged(userAuth => {
+			unsubscribe();
+			resolve(userAuth);
+		}, reject);
+	});
+};
+
 /* Setup Sign in with Google */
 export const auth = firebase.auth();
 export const firestore = firebase.firestore();
 
-const provider = new firebase.auth.GoogleAuthProvider();
-provider.addScope('profile');
-provider.addScope('email');
-
-provider.setCustomParameters({ prompt: 'select_account' });
+export const googleProvider = new firebase.auth.GoogleAuthProvider();
+googleProvider.addScope('profile');
+googleProvider.addScope('email');
+googleProvider.setCustomParameters({ prompt: 'select_account' });
 
 export const signInWithGoogle = () => {
 	firebase
 		.auth()
-		.signInWithPopup(provider)
+		.signInWithPopup(googleProvider)
 		// Optional code for handeling credentials and errors.
 		.then(result => {
 			let credential = result.credential;
